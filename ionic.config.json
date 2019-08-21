@@ -1,5 +1,7 @@
 {
   "name": "linovi",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
