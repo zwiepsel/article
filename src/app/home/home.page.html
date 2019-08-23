@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
       Livoni warehouse
     </ion-title>
@@ -13,7 +13,7 @@
               <ion-segment-button value="create">Aanmaken</ion-segment-button>
             </ion-segment>
             <ion-col>
-                <div *ngIf="this.scan">        
+            <div *ngIf="this.scan">        
             <ion-list>
             <ion-list-header color="primary">Scan uw artikel</ion-list-header>
             <ion-item>
@@ -22,7 +22,7 @@
             </ion-item>
             <ion-item>
                 <ion-label color="black">Artikel</ion-label>
-                <ion-input type="text" [(ngModel)]="article.Description" text-right readonly></ion-input>
+                <ion-textarea type="text" rows="4" placeholder="omschrijving..."   [(ngModel)]="article.Description" readonly></ion-textarea>
             </ion-item>
               <ion-item>
                   <ion-label color="black">Huidig aantal</ion-label>
@@ -46,12 +46,32 @@
               </ion-grid>
                 </div>
                 <div *ngIf="!this.scan">
-                    <ion-list>
-                        <ion-list-header color="primary">Afspraken</ion-list-header>
-                        <ion-item lines="full"  detail>
-
-                        </ion-item>
-                      </ion-list>
+                  <ion-list>
+                    <ion-list-header color="primary">Nieuw Product</ion-list-header>
+                    <ion-item>
+                        <ion-label color="black">Barcode</ion-label>
+                        <ion-input type="text" [(ngModel)]="article.BarCode" placeholder="Scan een barcode..." text-right readonly></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label color="black">Artikel</ion-label>
+                        <ion-textarea type="text" rows="4"   [(ngModel)]="article.Description"></ion-textarea>
+                    </ion-item>
+                      <ion-item>
+                          <ion-label color="black">aantal</ion-label>
+                          <ion-input type="number" [(ngModel)]="article.Amount" text-right placeholder="0"></ion-input>
+                      </ion-item>
+                    </ion-list>
+                    <ion-grid>
+                        <ion-row>
+                          <ion-col col-3>
+                              <ion-button size="medium" (click)="scanCode()" expand="block">Scannen</ion-button>
+                          </ion-col>
+                          <ion-col col-6>
+        
+                          </ion-col>
+                          <ion-col col-3><ion-button size="medium" (click)="saveNewArticle()" expand="block">Aanmaken</ion-button></ion-col>
+                        </ion-row>
+                      </ion-grid>
                   </div>
     
             </ion-col>

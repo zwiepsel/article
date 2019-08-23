@@ -7,7 +7,9 @@ import {
 } from "@ionic-native/barcode-scanner/ngx";
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { from } from 'rxjs';
-import { Http } from '@angular/http';
+import { finalize } from 'rxjs/operators';
+import { HTTP } from '@ionic-native/http/ngx';
+import { Platform, LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -26,7 +28,7 @@ export class HomePage {
   updateUrl:string = 'http://h2733926.stratoserver.net/livoni/api/articles/update';
   httpOptions = {};
 
-  constructor(private barcodeScanner: BarcodeScanner, private httpService: HttpClient, private http: Http) {
+  constructor(private barcodeScanner: BarcodeScanner, private httpService: HttpClient, private nativeHttp: HTTP, private plt: Platform, private loadingCtrl: LoadingController) {
     //Options
     this.barcodeScannerOptions = {
       showTorchButton: true,
@@ -54,51 +56,38 @@ export class HomePage {
     );
   }
 
-  saveArticle(barCode, amount){
-    this.httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Accept' : 'application/json'
-      })
-    }
+  async saveArticle(barCode, amount){
     // this.getArticle('049000040869')
 
     var data =  {
       "BarCode": "049000040869",
-      "Amount": 23
+      "Amount": 24
     }
-    // this.httpService.post(this.updateUrl,data).subscribe(data => {
-    //  console.log(data)
-    // })
-    this.http.post(this.updateUrl, data,  this.httpOptions).subscribe((data) => {
-      console.log(data);
-    })
 
-    // var result = from( // wrap the fetch in a from if you need an rxjs Observable
-    //   fetch(
-    //     this.updateUrl,
-    //     {
-    //       body: JSON.stringify(data),
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       method: 'POST',
-    //       mode: 'no-cors'
-    //     }
-    //   )
-    // );
-    
-  }
-
-  scanCode() {
-    this.barcodeScanner
-      .scan()
-      .then(barcodeData => {
-       this.getArticle(barcodeData.text);
-      })
-      .catch(err => {
-        alert("Fout tijdens scannen: " +  err);
+      let loading = await this.loadingCtrl.create();
+      await loading.present();
+      from(this.nativeHttp.post(this.updateUrl, { "BarCode": "049000040869", "Amount": 66}, {'Content-Type': 'application/json'})).pipe(
+        finalize(() => loading.dismiss())
+      ).subscribe(data => {
+        let parsed = JSON.parse(data.data);
+        this.article = parsed.results;
+      }, err => {
+        console.log('Native Call error: ', err);
       });
+    }
+
+    
+  scanCode() {
+    this.getArticle('3574661173542');
+    // this.barcodeScanner
+    //   .scan()
+    //   .then(barcodeData => {
+
+    //    this.getArticle(barcodeData.text);
+    //   })
+    //   .catch(err => {
+    //     alert("Fout tijdens scannen: " +  err);
+    //   });
   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
