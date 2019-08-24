@@ -6,8 +6,8 @@ import {
   BarcodeScanner
 } from "@ionic-native/barcode-scanner/ngx";
 import { SegmentChangeEventDetail } from '@ionic/core';
+import { HTTP } from '@ionic-native/http/ngx';
 import { from } from 'rxjs';
-import { Http } from '@angular/http';
 
 
 @Component({
@@ -26,7 +26,7 @@ export class HomePage {
   updateUrl:string = 'http://h2733926.stratoserver.net/livoni/api/articles/update';
   httpOptions = {};
 
-  constructor(private barcodeScanner: BarcodeScanner, private httpService: HttpClient, private http: Http) {
+  constructor(private barcodeScanner: BarcodeScanner, private httpService: HttpClient, private http: HTTP) {
     //Options
     this.barcodeScannerOptions = {
       showTorchButton: true,
@@ -54,7 +54,7 @@ export class HomePage {
     );
   }
 
-  saveArticle(barCode, amount){
+  async saveArticle(barCode, amount){
     this.httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -65,14 +65,23 @@ export class HomePage {
 
     var data =  {
       "BarCode": "049000040869",
-      "Amount": 23
+      "Amount": 66
     }
     // this.httpService.post(this.updateUrl,data).subscribe(data => {
     //  console.log(data)
     // })
-    this.http.post(this.updateUrl, data,  this.httpOptions).subscribe((data) => {
-      console.log(data);
-    })
+ 
+    // Returns a promise, need to convert with of() to Observable (if want)!
+    from(this.http.post(this.updateUrl, {
+      "BarCode": "049000040869",
+      "Amount": "66"
+    }, {'Content-Type': 'application/json'})).subscribe(data => {
+      let parsed = JSON.parse(data.data);
+      alert(parsed.results);
+    }, err => {
+      alert("fout" + JSON.stringify(err));
+    });
+
 
     // var result = from( // wrap the fetch in a from if you need an rxjs Observable
     //   fetch(
@@ -88,6 +97,25 @@ export class HomePage {
     //   )
     // );
     
+  }
+
+  async getData() {
+    try {
+      const url = 'https://api.example.com';
+      const params = {};
+      const headers = {};
+
+      const response = await this.http.get(url, params, headers);
+
+      console.log(response.status);
+      console.log(JSON.parse(response.data)); // JSON data returned by server
+      console.log(response.headers);
+
+    } catch (error) {
+      console.error(error.status);
+      console.error(error.error); // Error message as string
+      console.error(error.headers);
+    }
   }
 
   scanCode() {
