@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { GlobalService } from './provider/global.data';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import { HttpModule } from '@angular/http';
     StatusBar,
     SplashScreen,
     BarcodeScanner,
+    GlobalService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     HTTP
   ],
