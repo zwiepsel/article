@@ -47,16 +47,16 @@ export class HomePage {
   productAction: object;
   section: any;
   // TEST URL's
-  url: string = 'http://localhost:56871/api/articles/get?Barcode=';
-  updateUrl: string = 'http://localhost:56871/api/articles/update';
-  createUrl: string = 'http://localhost:56871/api/articles/new';
-  allUrl: string = 'http://localhost:56871/api/articles/all'
+  // url: string = 'http://localhost:56871/api/articles/get?Barcode=';
+  // updateUrl: string = 'http://localhost:56871/api/articles/update';
+  // createUrl: string = 'http://localhost:56871/api/articles/new';
+  // allUrl: string = 'http://localhost:56871/api/articles/all'
 
   // LIVE URL's
-  // url: string = 'http://h2733926.stratoserver.net/livoni/api/articles/get?Barcode=';
-  // updateUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/update';
-  // createUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/new';
-  // allUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/all'
+  url: string = 'http://h2733926.stratoserver.net/livoni/api/articles/get?Barcode=';
+  updateUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/update';
+  createUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/new';
+  allUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/all'
   httpOptions = {};
   public filteredItems = [];
   public items = Array < Article > ();
