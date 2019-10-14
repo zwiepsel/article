@@ -44,6 +44,8 @@ export class HomePage {
   article: any;
   scan: number;
   pickup: boolean;
+  productAction: object;
+  section: any;
   // TEST URL's
   url: string = 'http://localhost:56871/api/articles/get?Barcode=';
   updateUrl: string = 'http://localhost:56871/api/articles/update';
@@ -79,9 +81,12 @@ export class HomePage {
     this.article.Description = '';
     this.article.NewAmount = '';
     this.article.Locations = [];
+    this.items = [];
+
   }
 
   ngOnInit() {
+    this.section = "scan"
     this.httpService.get(`${this.allUrl}`).subscribe(
       data => {
         this.parseData(data);
@@ -91,9 +96,16 @@ export class HomePage {
       });
   }
 
+  ionViewWillEnter() {
+    if(this.section == 'scan') {
+      this.scan = 1;
+    }
+  }
+  
+
   parseData(jsonData: object) {
     //considering you get your data in json arrays
-    this.items = [];
+
     this.filteredItems = null;
     for (let key in jsonData) {
       let value = jsonData[key];
@@ -107,8 +119,7 @@ export class HomePage {
 
   removeLocation(index){
     var articleLocation = this.article.locations[index]
-    console.log(articleLocation)
-    if(index !== -1 && articleLocation.Amount === 0){
+    if(index !== -1 && (articleLocation.Amount === 0 || articleLocation.Amount === null)){
       this.article.locations.splice(index, 1);
     }
   }
@@ -142,30 +153,33 @@ export class HomePage {
       this.parseData(data);
       loading.dismiss();
     }, error => {
-      this.globalService.debug ? alert(JSON.stringify(error)) : alert("Producten niet gevonden");
+      this.globalService.debug ? alert(JSON.stringify(error)) : alert("Producten niet ingeladen");
     });
   }
 
+
+  // IONIC functions, use nativeHttp to prevent CORS errors
   async saveArticle() {
     if (this.article.locations.length !== 0) {
       let loading = await this.loadingCtrl.create();
       await loading.present();
       from(this.nativeHttp.post(this.updateUrl, {
+        "Description": this.article.Description,
         "BarCode": this.article.BarCode,
-        "Amount": this.article.NewAmount.toString()
+        "Amount": this.article.locations[0].toString(),
+        "ArticleCode" : this.article.ArticleCode,
+        "Locations" : this.article.locations
       }, {})).pipe(
         finalize(() => loading.dismiss())
       ).subscribe(data => {
-        let article = JSON.parse(data.data);
         this.clearValues();
       }, err => {
-        this.globalService.debug ? alert(JSON.stringify(err)) : alert("Fout tijdens opslaan");
+        this.globalService.debug ? alert(JSON.stringify(err)) : alert(err.error);
       });
     }
   }
 
   async saveNewArticle() {
-    console.log(this.article.locations)
     if (this.article.locations.length !== 0) {
       let loading = await this.loadingCtrl.create();
       await loading.present();
@@ -178,14 +192,9 @@ export class HomePage {
       }, {})).pipe(
         finalize(() => loading.dismiss())
       ).subscribe(data => {
-        let article = JSON.parse(data.data);
-        this.article.BarCode = '';
-        this.article.Description = '';
-        this.article.ArticleCode = '';
-        this.article.Amount = '';
-        this.article.NewAmount = '';
+        this.clearValues();
       }, err => {
-        this.globalService.debug ? alert(JSON.stringify(err)) : alert("Fout tijdens opslaan");
+        this.globalService.debug ? alert(JSON.stringify(err)) : alert(err.error);
       });
     }
     else{
@@ -193,25 +202,26 @@ export class HomePage {
     }
   }
 
+  
+  // Localhost functions
+  async saveArticle2() {
+    if (this.article.locations.length !== 0) {
+      this.httpService.post(`${this.updateUrl}`,{
+        "Description": this.article.Description,
+        "BarCode": this.article.BarCode,
+        "Amount": this.article.locations[0].toString(),
+        "ArticleCode" : this.article.ArticleCode,
+        "Locations" : this.article.locations
+      } ).subscribe(data => {
+        this.parseData(data);
+        this.clearValues();
+      }, error => {
+        this.globalService.debug ? alert(JSON.stringify(error)) : alert(error.error);
+      });
+    }
+  }
+ 
   saveNewArticle2() {
-    // console.log(this.article.locations)
-    // if (this.article.locations.length !== 0) {
-    //   (this.httpService.post(this.createUrl, {
-    //     "Description": this.article.Description,
-    //     "BarCode": this.article.BarCode,
-    //     "Amount": this.article.locations[0].toString(),
-    //     "ArticleCode" : this.article.ArticleCode
-    //   }).subscribe(data => {
-    //     let article = data;
-    //     this.article.BarCode = '';
-    //     this.article.Description = '';
-    //     this.article.ArticleCode = '';
-    //     this.article.Amount = '';
-    //     this.article.NewAmount = '';
-    //   }), err => {
-    //     this.globalService.debug ? alert(JSON.stringify(err)) : alert("Fout tijdens opslaan");
-    //   }
-    // }
     this.httpService.post(`${this.createUrl}`,{
       "Description": this.article.Description,
       "BarCode": this.article.BarCode,
@@ -220,10 +230,13 @@ export class HomePage {
       "Locations" : this.article.locations
      } ).subscribe(data => {
       this.parseData(data);
+      this.clearValues();
     }, error => {
-      this.globalService.debug ? alert(JSON.stringify(error)) : alert("Producten niet gevonden");
+      this.globalService.debug ? alert(JSON.stringify(error)) : alert(error.error);
     });
   }
+
+
 
   getItems(ev: any) {
     this.filteredItems = this.items;
@@ -234,7 +247,10 @@ export class HomePage {
   filterLocations(searchTerm) {
     if (searchTerm.length > 3) {
       return this.items.filter((item) => {
-        return item.Description.toLowerCase().includes(searchTerm.toLowerCase());
+        if(item.Description){
+          return item.Description.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+
       });
     }
   }
@@ -243,6 +259,7 @@ export class HomePage {
     this.getArticle(article.BarCode)
     // this.article = article;
     this.scan = 1;
+    this.section = "scan";
   }
 
   scanCode() {
