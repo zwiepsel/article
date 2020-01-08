@@ -4,12 +4,12 @@
     <ion-buttons slot="start">
       <ion-menu-button autoHide="false"></ion-menu-button>
     </ion-buttons>
-    <ion-buttons slot="primary">
+    <!-- <ion-buttons slot="primary">
       <ion-button (click)="refreshData()" fill="solid" color="secondary">
         Vernieuw
         <ion-icon slot="end" name="refresh"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -83,7 +83,7 @@
                     <ion-list-header color="primary">Nieuw Product</ion-list-header>
                     <ion-item>
                         <ion-label color="black">Barcode</ion-label>
-                        <ion-input type="text" [(ngModel)]="article.BarCode" (click)="scanCode()" placeholder="Scan een barcode..." text-right readonly></ion-input>
+                        <ion-input type="text" [(ngModel)]="article.BarCode" (click)="scanNewCode()" placeholder="Scan een barcode..." text-right></ion-input>
                     </ion-item>
                     <ion-item>
                       <ion-label color="black">Code</ion-label>

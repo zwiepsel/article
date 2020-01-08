@@ -53,11 +53,11 @@ export class HomePage {
   // allUrl: string = 'http://localhost:56871/api/articles/all'
 
   // LIVE URL's
-  url: string = 'http://h2733926.stratoserver.net/livoni/api/articles/get?Barcode=';
-  updateUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/update';
-  createUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/new';
-  allUrl: string = 'http://h2733926.stratoserver.net/livoni/api/articles/all'
-  httpOptions = {};
+  url: string = 'http://198.27.96.209/Livoni/api/articles/get?Barcode=';
+  updateUrl: string = 'http://198.27.96.209/Livoni/api/articles/update';
+  createUrl: string = 'http://198.27.96.209/Livoni/api/articles/new';
+  allUrl: string = 'http://198.27.96.209/Livoni/api/articles/all'
+  // httpOptions = {};
   public filteredItems = [];
   public items = Array < Article > ();
   public searchTerm = '';
@@ -126,7 +126,10 @@ export class HomePage {
 
   getArticle(barCode: string) {
     if (barCode !== undefined && barCode !== '') {
-      this.httpService.get(`${this.url}${barCode}`).subscribe(
+      let headers = new HttpHeaders({
+        'Accept': 'text/javascript'
+      });
+      this.httpService.get(`${this.url}${barCode}`, { headers } ).subscribe(
         data => {
           this.article = data
         },
@@ -160,41 +163,47 @@ export class HomePage {
 
   // IONIC functions, use nativeHttp to prevent CORS errors
   async saveArticle() {
+    // let headers = {
+    //   'Content-Type': 'application/json'
+    // };
+    var test = Object.assign({}, {
+      "Description": this.article.Description,
+      "BarCode": this.article.BarCode,
+      "Amount": 0,
+      "ArticleCode" : this.article.ArticleCode,
+      "Locations" : this.article.locations
+    });
     if (this.article.locations.length !== 0) {
       let loading = await this.loadingCtrl.create();
       await loading.present();
-      from(this.nativeHttp.post(this.updateUrl, {
-        "Description": this.article.Description,
-        "BarCode": this.article.BarCode,
-        "Amount": this.article.locations[0].toString(),
-        "ArticleCode" : this.article.ArticleCode,
-        "Locations" : this.article.locations
-      }, {})).pipe(
+      from(this.nativeHttp.post(this.updateUrl,test, {})).pipe(
         finalize(() => loading.dismiss())
       ).subscribe(data => {
         this.clearValues();
       }, err => {
-        this.globalService.debug ? alert(JSON.stringify(err)) : alert(err.error);
+        this.globalService.debug ? alert(JSON.stringify(err)) : alert(err);
       });
     }
   }
 
   async saveNewArticle() {
     if (this.article.locations.length !== 0) {
-      let loading = await this.loadingCtrl.create();
-      await loading.present();
-      from(this.nativeHttp.post(this.createUrl, {
+      var test = Object.assign({}, {
         "Description": this.article.Description,
         "BarCode": this.article.BarCode,
-        "Amount": this.article.locations[0].toString(),
+        "Amount": 0,
         "ArticleCode" : this.article.ArticleCode,
         "Locations" : this.article.locations
-      }, {})).pipe(
+      });
+
+      let loading = await this.loadingCtrl.create();
+      await loading.present();
+      from(this.nativeHttp.post(this.createUrl, test , {})).pipe(
         finalize(() => loading.dismiss())
       ).subscribe(data => {
         this.clearValues();
       }, err => {
-        this.globalService.debug ? alert(JSON.stringify(err)) : alert(err.error);
+        this.globalService.debug ? alert(JSON.stringify(err)) : alert(err);
       });
     }
     else{
@@ -205,6 +214,7 @@ export class HomePage {
   
   // Localhost functions
   async saveArticle2() {
+
     if (this.article.locations.length !== 0) {
       this.httpService.post(`${this.updateUrl}`,{
         "Description": this.article.Description,
