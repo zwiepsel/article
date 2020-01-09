@@ -4,12 +4,12 @@
     <ion-buttons slot="start">
       <ion-menu-button autoHide="false"></ion-menu-button>
     </ion-buttons>
-    <!-- <ion-buttons slot="primary">
+    <ion-buttons slot="primary">
       <ion-button (click)="refreshData()" fill="solid" color="secondary">
         Vernieuw
         <ion-icon slot="end" name="refresh"></ion-icon>
       </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -18,7 +18,7 @@
           <ion-segment [(ngModel)]="section" (ionChange)="onFilterUpdate($event)">
               <ion-segment-button value="scan" (click)="clearValues()" checked>Scannen</ion-segment-button>
               <ion-segment-button value="search" (click)="clearValues()">Zoeken</ion-segment-button>
-              <ion-segment-button value="create" (click)="clearValues()">Aanmaken</ion-segment-button>
+              <!-- <ion-segment-button value="create" (click)="clearValues()">Aanmaken</ion-segment-button> -->
             </ion-segment>
             <ion-col>
             <div *ngIf="this.scan === 1">        
@@ -78,7 +78,7 @@
                     </ion-item>
                   </ion-list>
                 </div>
-                <div *ngIf="this.scan === 3">
+                <!-- <div *ngIf="this.scan === 3">
                   <ion-list>
                     <ion-list-header color="primary">Nieuw Product</ion-list-header>
                     <ion-item>
@@ -123,7 +123,7 @@
                           <ion-col col-3><ion-button size="medium" (click)="saveNewArticle2()" expand="block">Aanmaken</ion-button></ion-col>
                         </ion-row>
                       </ion-grid>
-                  </div>
+                  </div> -->
     
             </ion-col>
 

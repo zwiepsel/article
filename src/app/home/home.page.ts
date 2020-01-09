@@ -53,10 +53,10 @@ export class HomePage {
   // allUrl: string = 'http://localhost:56871/api/articles/all'
 
   // LIVE URL's
-  url: string = 'http://198.27.96.209/Livoni/api/articles/get?Barcode=';
-  updateUrl: string = 'http://198.27.96.209/Livoni/api/articles/update';
-  createUrl: string = 'http://198.27.96.209/Livoni/api/articles/new';
-  allUrl: string = 'http://198.27.96.209/Livoni/api/articles/all'
+  url: string = 'http://h2733926.stratoserver.net/Livoni/api/articles/get?Barcode=';
+  updateUrl: string = 'http://h2733926.stratoserver.net/Livoni/api/articles/update';
+  createUrl: string = 'http://h2733926.stratoserver.net/Livoni/api/articles/new';
+  allUrl: string = 'http://h2733926.stratoserver.net/Livoni/api/articles/all'
   // httpOptions = {};
   public filteredItems = [];
   public items = Array < Article > ();
