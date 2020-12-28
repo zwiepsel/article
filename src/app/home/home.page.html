@@ -28,14 +28,32 @@
                 <ion-label color="black">Barcode</ion-label>
                 <ion-input type="text" [(ngModel)]="article.BarCode" text-right readonly></ion-input>
             </ion-item>
+            <ion-item [hidden]="!changeCode" (click)="scanCodeNew()">
+              <ion-label color="black">Nieuwe barcode</ion-label>
+              <ion-input type="text" [(ngModel)]="article.NewBarCode" text-right ></ion-input>
+          </ion-item>
             <ion-item>
               <ion-label color="black">Code</ion-label>
               <ion-textarea type="text" [(ngModel)]="article.ArticleCode" readonly></ion-textarea>
           </ion-item>
             <ion-item>
                 <ion-label color="black">Artikel</ion-label>
-                <ion-textarea type="text" rows="4" placeholder="omschrijving..."   [(ngModel)]="article.Description" readonly></ion-textarea>
+                <ion-textarea type="text" rows="4" placeholder="omschrijving..."   [(ngModel)]="article.Description" ></ion-textarea>
             </ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col col-3>
+   
+                </ion-col>
+                <ion-col col-6>
+                  <ion-button [hidden]="changeCode" size="medium" (click)="changeBarcode()" expand="block">Barcode wijzigen</ion-button>
+                  <ion-button [hidden]="!changeCode" size="medium" (click)="revertBarcode()" expand="block">Annuleren</ion-button>
+                </ion-col>
+                <ion-col col-3>
+   
+                </ion-col>
+              </ion-row>
+            </ion-grid>
               <ion-list>
                   <ion-list-header color="primary">   <span text-left>Locaties</span>
                     <span text-right class="amount-header-right location-amount">Aantal</span></ion-list-header> 
@@ -68,7 +86,14 @@
               </ion-grid>
                 </div>
                 <div *ngIf="this.scan === 2">
-                  <ion-searchbar (ionInput)="getItems($event)" [(ngModel)]="searchTerm" placeholder="zoeken" autocomplete animated></ion-searchbar>
+                    <ion-row>
+                        <ion-col size="10">
+                            <ion-searchbar (ionInput)="getItems($event)" [(ngModel)]="searchTerm" placeholder="zoeken" autocomplete animated></ion-searchbar>
+                        </ion-col>
+                        <ion-col size="2">
+                            <ion-button style="margin-top:10px" size="medium" (click)="empty()" expand="block">Clear</ion-button>
+                        </ion-col>
+                      </ion-row>
                   <ion-list>
                     <ion-list-header color="primary">   <span text-left>Product</span>
                     </ion-list-header> 

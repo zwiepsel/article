@@ -46,6 +46,7 @@ export class HomePage {
   pickup: boolean;
   productAction: object;
   section: any;
+  changeCode: boolean;
   // TEST URL's
   // url: string = 'http://localhost:56871/api/articles/get?Barcode=';
   // updateUrl: string = 'http://localhost:56871/api/articles/update';
@@ -77,15 +78,18 @@ export class HomePage {
     this.article = {};
     this.article.BarCode = '';
     this.article.ArticleCode = '';
+    this.article.NewBarCode = '';
     this.article.Amount = '';
     this.article.Description = '';
     this.article.NewAmount = '';
     this.article.Locations = [];
     this.items = [];
+    this.changeCode = false;
 
   }
 
   ngOnInit() {
+    this.changeCode = false;
     this.section = "scan"
     this.httpService.get(`${this.allUrl}`).subscribe(
       data => {
@@ -143,6 +147,7 @@ export class HomePage {
   clearValues() {
     this.article.BarCode = '';
     this.article.Description = '';
+    this.article.NewBarCode = '';
     this.article.Amount = '';
     this.article.NewAmount = '';
     this.article.ArticleCode = '';
@@ -150,6 +155,8 @@ export class HomePage {
   }
 
   async refreshData(){
+    this.items = [];
+    this.filteredItems = null;
     let loading = await this.loadingCtrl.create();
     await loading.present();
     this.httpService.get(`${this.allUrl}`).subscribe(data => {
@@ -186,6 +193,14 @@ export class HomePage {
     }
   }
 
+  changeBarcode() {
+    this.changeCode = true;
+  }
+
+  revertBarcode(){
+    this.changeCode = false;
+  }
+
   async saveNewArticle() {
     if (this.article.locations.length !== 0) {
       var test = Object.assign({}, {
@@ -214,17 +229,17 @@ export class HomePage {
   
   // Localhost functions
   async saveArticle2() {
-
     if (this.article.locations.length !== 0) {
       this.httpService.post(`${this.updateUrl}`,{
         "Description": this.article.Description,
         "BarCode": this.article.BarCode,
         "Amount": this.article.locations[0].toString(),
         "ArticleCode" : this.article.ArticleCode,
+        "NewBarCode" : this.article.NewBarCode,
         "Locations" : this.article.locations
       } ).subscribe(data => {
         this.parseData(data);
-        this.clearValues();
+         this.clearValues();
       }, error => {
         this.globalService.debug ? alert(JSON.stringify(error)) : alert(error.error);
       });
@@ -284,6 +299,17 @@ export class HomePage {
       });
   }
 
+  scanCodeNew() {
+    this.barcodeScanner
+      .scan()
+      .then(barcodeData => {
+        this.article.NewBarCode = barcodeData.text;
+      })
+      .catch(err => {
+        this.globalService.debug ? alert(JSON.stringify(err)) : alert("Fout tijdens scannen");
+      });
+  }
+
   scanNewCode() {
     this.barcodeScanner
       .scan()
@@ -298,7 +324,8 @@ export class HomePage {
   onFilterUpdate(event: CustomEvent < SegmentChangeEventDetail > ) {
     if (event.detail.value === 'scan') {
       this.scan = 1;
-      this.filteredItems = null;
+      this.changeCode = false;
+     // this.filteredItems = null;
     } else if (event.detail.value === 'search') {
       this.scan = 2;
       this.searchTerm = null;
@@ -306,6 +333,10 @@ export class HomePage {
       this.scan = 3;
       this.filteredItems = null;
     }
+  }
+
+  empty(){
+    this.filteredItems = null;
   }
 
   // Code for QR SCANNER CAN BE COMMENTED OUT FOR NOW
