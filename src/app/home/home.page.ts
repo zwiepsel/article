@@ -118,7 +118,7 @@ export class HomePage {
   }
 
   addNewLocation(){
-    this.article.locations.push({ Location : '', Amount : null})
+    this.article.locations.push({ Location : '', Amount : null, Date: new Date(), Unit: 'stuk'})
   }
 
   removeLocation(index){

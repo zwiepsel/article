@@ -26,7 +26,7 @@
             <ion-list-header color="primary">Scan uw artikel</ion-list-header>
             <ion-item (click)="scanCode()">
                 <ion-label color="black">Barcode</ion-label>
-                <ion-input type="text" [(ngModel)]="article.BarCode" text-right readonly></ion-input>
+                <ion-input type="text" [(ngModel)]="article.BarCode" text-right ></ion-input>
             </ion-item>
             <ion-item [hidden]="!changeCode" (click)="scanCodeNew()">
               <ion-label color="black">Nieuwe barcode</ion-label>
@@ -62,6 +62,12 @@
                         <ion-icon (click)="removeLocation(i)" slot="start" name="trash"></ion-icon>
                       <ion-input type="text" placeholder="Lokatie..." [(ngModel)]="location.Location"></ion-input>
                   </ion-item>
+                      <ion-item style="width:90%">
+                          <ion-select value="stuk" [(ngModel)]="location.Unit">
+                              <ion-select-option value="stuk">Stuk</ion-select-option>
+                              <ion-select-option value="doos">Doos</ion-select-option>
+                          </ion-select>
+                      </ion-item>
                   <ion-item>
                       <ion-input type="number" [(ngModel)]="location.Amount" text-right placeholder="0"></ion-input>
                   </ion-item>
