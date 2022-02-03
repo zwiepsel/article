@@ -58,12 +58,12 @@
                   <ion-list-header color="primary">   <span text-left>Locaties</span>
                     <span text-right class="amount-header-right location-amount">Aantal</span></ion-list-header> 
                   <ion-item *ngFor="let location of article.locations; let i = index">
-                    <ion-item>
+                    <ion-item style="width: 100%" >
                         <ion-icon (click)="removeLocation(i)" slot="start" name="trash"></ion-icon>
                       <ion-input type="text" placeholder="Lokatie..." [(ngModel)]="location.Location"></ion-input>
                   </ion-item>
-                      <ion-item style="width:90%">
-                          <ion-select value="stuk" [(ngModel)]="location.Unit">
+                      <ion-item >
+                          <ion-select style="min-width:150px"  value="stuk" [(ngModel)]="location.Unit">
                               <ion-select-option value="stuk">Stuk</ion-select-option>
                               <ion-select-option value="doos">Doos</ion-select-option>
                           </ion-select>

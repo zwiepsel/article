@@ -62,7 +62,10 @@ export class HomePage {
   public filteredItems = [];
   public items = Array < Article > ();
   public searchTerm = '';
-
+  unitMeasure: any = {
+    cssClass: 'unit-measure-width',
+  };
+  
   constructor(private barcodeScanner: BarcodeScanner,
     private httpService: HttpClient,
     private nativeHttp: HTTP,
